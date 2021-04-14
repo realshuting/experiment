@@ -1,0 +1,25 @@
+apiVersion: kyverno.io/v1
+kind: Policy
+metadata:
+  name: add-requests
+spec:
+  rules:
+  - name: "test"
+    match:
+      resources:
+        kinds:
+          Pod
+        namespaceSelector:
+          matchExpressions:
+            - key: namespace-type
+              operator: In
+              values:
+              - myprivatelabel
+    mutate:
+      overlay:
+        spec:
+          containers:
+          - (name): "*"
+            resources:
+              requests:
+                cpu: "1000m"
